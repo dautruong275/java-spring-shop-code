@@ -5,11 +5,11 @@ import lombok.*;
 
 @Entity
 @Table(name = "categories")
-@Data
+@Data//toString
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class Category {
     @Id

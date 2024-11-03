@@ -23,11 +23,12 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+
 public class JwtTokenFilter extends OncePerRequestFilter{
     @Value("${api.prefix}")
     private String apiPrefix;
     private final UserDetailsService userDetailsService;
-    private final JwtTokenUtils jwtTokenUtils;
+    private final JwtTokenUtils jwtTokenUtil;
     @Override
     protected void doFilterInternal(@NonNull  HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
@@ -44,11 +45,11 @@ public class JwtTokenFilter extends OncePerRequestFilter{
                 return;
             }
             final String token = authHeader.substring(7);
-            final String phoneNumber = jwtTokenUtils.extractPhoneNumber(token);
+            final String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
             if (phoneNumber != null
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
                 User userDetails = (User) userDetailsService.loadUserByUsername(phoneNumber);
-                if(jwtTokenUtils.validateToken(token, userDetails)) {
+                if(jwtTokenUtil.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authenticationToken =
                             new UsernamePasswordAuthenticationToken(
                                     userDetails,
@@ -66,17 +67,14 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 
     }
     private boolean isBypassToken(@NonNull  HttpServletRequest request) {
+
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
                 Pair.of(String.format("%s/roles", apiPrefix), "GET"),
                 Pair.of(String.format("%s/products", apiPrefix), "GET"),
+                Pair.of(String.format("%s/orders", apiPrefix), "GET"),
                 Pair.of(String.format("%s/categories", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
-                Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
-                Pair.of(String.format("%s/swagger-ui.html", apiPrefix), "GET"),
-                Pair.of(String.format("%s/swagger-ui/**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/v3/api-docs/**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/swagger-resources/**", apiPrefix), "GET"),
-                Pair.of(String.format("%s/webjars/**", apiPrefix), "GET")
+                Pair.of(String.format("%s/users/login", apiPrefix), "POST")
         );
         for(Pair<String, String> bypassToken: bypassTokens) {
             if (request.getServletPath().contains(bypassToken.getFirst()) &&

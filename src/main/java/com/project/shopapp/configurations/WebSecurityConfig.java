@@ -38,13 +38,7 @@ public class WebSecurityConfig {
         http
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers(
-                            String.format("%s/swagger-ui.html", apiPrefix),
-                            String.format( "%s/swagger-ui/**", apiPrefix),// Swagger UI static files
-                            String.format("%s/v3/api-docs/**", apiPrefix),// OpenAPI documentation
-                            String.format("%s/swagger-resources/**", apiPrefix), // Swagger resources
-                            String.format("%s/webjars/**" , apiPrefix)      // Webjars for Swagger UI dependencies
-                                ).permitAll()
+                    requests
                             .requestMatchers(
                                     String.format("%s/users/register", apiPrefix),
                                     String.format("%s/users/login", apiPrefix)

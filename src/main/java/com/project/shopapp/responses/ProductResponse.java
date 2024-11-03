@@ -36,6 +36,7 @@ public class ProductResponse extends BaseResponse{
                 .thumbnail(product.getThumbnail())
                 .description(product.getDescription())
                 .categoryId(product.getCategory().getId())
+                .productImages(product.getProductImages())
                 .build();
         productResponse.setCreatedAt(product.getCreatedAt());
         productResponse.setUpdatedAt(product.getUpdatedAt());

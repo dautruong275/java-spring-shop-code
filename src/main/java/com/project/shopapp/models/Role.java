@@ -1,4 +1,5 @@
 package com.project.shopapp.models;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class Role {
 
     @Column(name = "name", nullable = false)
     private String name;
+
     public static String ADMIN = "ADMIN";
     public static String USER = "USER";
 }

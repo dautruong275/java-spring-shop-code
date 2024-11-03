@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -51,6 +52,10 @@ public class ProductService implements IProductService{
             return optionalProduct.get();
         }
         throw new DataNotFoundException("Cannot find product with id =" + productId);
+    }
+    @Override
+    public List<Product> findProductsByIds(List<Long> productIds) {
+        return productRepository.findProductsByIds(productIds);
     }
 
 
@@ -119,7 +124,7 @@ public class ProductService implements IProductService{
         if(size >= ProductImage.MAXIMUM_IMAGES_PER_PRODUCT) {
             throw new InvalidParamException(
                     "Number of images must be <= "
-                            +ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
+                    +ProductImage.MAXIMUM_IMAGES_PER_PRODUCT);
         }
         return productImageRepository.save(newProductImage);
     }

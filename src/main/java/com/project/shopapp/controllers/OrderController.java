@@ -1,9 +1,10 @@
 package com.project.shopapp.controllers;
 
 import com.project.shopapp.components.LocalizationUtils;
-import com.project.shopapp.dtos.OrderDTO;
+import com.project.shopapp.dtos.*;
 import com.project.shopapp.models.Order;
-import com.project.shopapp.services.OrderService;
+import com.project.shopapp.responses.OrderResponse;
+import com.project.shopapp.services.IOrderService;
 import com.project.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -11,17 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("${api.prefix}/orders")
 @RequiredArgsConstructor
-
 public class OrderController {
-    private final OrderService orderService;
+    private final IOrderService orderService;
     private final LocalizationUtils localizationUtils;
-
     @PostMapping("")
     public ResponseEntity<?> createOrder(
             @Valid @RequestBody OrderDTO orderDTO,
@@ -56,12 +54,12 @@ public class OrderController {
     public ResponseEntity<?> getOrder(@Valid @PathVariable("id") Long orderId) {
         try {
             Order existingOrder = orderService.getOrder(orderId);
-            return ResponseEntity.ok(existingOrder);
+            OrderResponse orderResponse = OrderResponse.fromOrder(existingOrder);
+            return ResponseEntity.ok(orderResponse);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
     @PutMapping("/{id}")
     //PUT http://localhost:8088/api/v1/orders/2
     //công việc của admin
